@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
-from collections import Counters
+from collections import Counter
 from tqdm import tqdm
+import math
+import os
 
 # --- Costanti Generali ---
 gen1_type_chart = {
