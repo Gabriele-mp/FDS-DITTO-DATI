@@ -1,3 +1,6 @@
+# ===================================================================
+# FILE src/feature_builder.py - VERSIONE CORRETTA
+# ===================================================================
 import numpy as np
 import pandas as pd
 from collections import Counter
@@ -92,7 +95,7 @@ def extract_features_v8(battle):
     }
     try:
         p1_team = battle.get('p1_team_details', [])
-        p2_lead = battle.get('p2_lead_details', {})
+        p2_lead = battle.get('p2_lead_details', {}) # ERRORE RIMOSSO QUI
         p1_stats_raw = {s: [] for s in ALL_BASE_STATS}
         p1_mean_stats = {}
         p1_team_pokemon_types = []
@@ -119,10 +122,15 @@ def extract_features_v8(battle):
                 for poke_types in p1_team_pokemon_types:
                     if any(get_effectiveness(lead_type, poke_types) >= 2.0 for lead_type in p2_lead_types): threatened_count += 1
                 f['p1_members_threatened_by_p2lead'] = threatened_count
+        
         weakness_list = []
         for poke_types in p1_team_pokemon_types:
-            for t in poke_types: weakness_list.extend(GEN1_WEAKNESS.get(t, []))\
-        if weakness_list: f['p1_team_weakness_entropy'] = entropy_from_counts(Counter(weakness_list))
+            for t in poke_types: weakness_list.extend(GEN1_WEAKNESS.get(t, [])) # ERRORE RIMOSSO QUI
+        
+        if weakness_list: 
+            f['p1_team_weakness_entropy'] = entropy_from_counts(Counter(weakness_list))
+        
+        # Tutto questo blocco è stato de-indentato
         tl = battle.get("battle_timeline", [])
         if not isinstance(tl, list): tl = []
         p1_hp_history, p2_hp_history = [], []
@@ -135,11 +143,12 @@ def extract_features_v8(battle):
         boost_sums = {f'p1_{stat}': 0 for stat in BOOST_KEYS}
         boost_sums.update({f'p2_{stat}': 0 for stat in BOOST_KEYS})
         prev_p1_hp, prev_p2_hp = 1.0, 1.0
+        
         for i, turn_data in enumerate(tl):
-            p1_state = turn_data.get("p1_pokemon_state", {})\
-            p2_state = turn_data.get("p2_pokemon_state", {})\
-            p1_move = turn_data.get("p1_move_details", {})\
-            p2_move = turn_data.get("p2_move_details", {})\
+            p1_state = turn_data.get("p1_pokemon_state", {})
+            p2_state = turn_data.get("p2_pokemon_state", {})
+            p1_move = turn_data.get("p1_move_details", {})
+            p2_move = turn_data.get("p2_move_details", {})
             current_p1_hp = p1_state.get("hp_pct", prev_p1_hp)
             current_p2_hp = p2_state.get("hp_pct", prev_p2_hp)
             p1_hp_history.append(current_p1_hp)
@@ -164,8 +173,8 @@ def extract_features_v8(battle):
             if p2_status == "frz": f['status_adv_frz'] += 1
             if p2_status == "slp": f['status_adv_slp'] += 1
             if p2_status == "par": f['status_adv_par'] += 1
-            b1 = p1_state.get("boosts", {})\
-            b2 = p2_state.get("boosts", {})\
+            b1 = p1_state.get("boosts", {})
+            b2 = p2_state.get("boosts", {})
             for stat in BOOST_KEYS:
                 boost_sums[f'p1_{stat}'] += b1.get(stat, 0)
                 boost_sums[f'p2_{stat}'] += b2.get(stat, 0)
@@ -191,6 +200,7 @@ def extract_features_v8(battle):
                 f['status_burden_advantage_t20'] = (p1_status_count_t20 / (len(p1_alive_t20) + 1e-6)) - (p2_status_count_t20 / (len(p2_alive_t20) + 1e-6))
                 f['total_hp_advantage_t20'] = sum(mon['hp'] for mon in p1_alive_t20) - sum(mon['hp'] for mon in p2_alive_t20)
                 f['high_hp_advantage_t20'] = sum(1 for mon in p1_alive_t20 if mon['hp'] >= 0.8) - sum(1 for mon in p2_alive_t20 if mon['hp'] >= 0.8)
+        
         if p1_dmg_drops and p2_dmg_drops:
             f['dmg_sum_adv'] = np.sum(p2_dmg_drops) - np.sum(p1_dmg_drops)
             f['dmg_p90_adv'] = np.quantile(p2_dmg_drops, 0.9) - np.quantile(p1_dmg_drops, 0.9)
@@ -241,7 +251,7 @@ def extract_features_v20(battle, is_test_set=False):
     }
     try:
         p1_team = battle.get('p1_team_details', [])
-        p2_lead = battle.get('p2_lead_details', {})\
+        p2_lead = battle.get('p2_lead_details', {}) # ERRORE RIMOSSO QUI
         p1_stats_raw = {s: [] for s in ALL_BASE_STATS}
         p1_mean_stats = {}
         p1_team_pokemon_types = []
@@ -286,10 +296,10 @@ def extract_features_v20(battle, is_test_set=False):
         p1_rec_moves_dyn, p2_rec_moves_dyn = 0, 0
         p1_boost_moves_dyn, p2_boost_moves_dyn = 0, 0
         for i, turn_data in enumerate(tl):
-            p1_state = turn_data.get("p1_pokemon_state", {})\
-            p2_state = turn_data.get("p2_pokemon_state", {})\
-            p1_move = turn_data.get("p1_move_details", {})\
-            p2_move = turn_data.get("p2_move_details", {})\
+            p1_state = turn_data.get("p1_pokemon_state", {}) # ERRORE RIMOSSO QUI
+            p2_state = turn_data.get("p2_pokemon_state", {}) # ERRORE RIMOSSO QUI
+            p1_move = turn_data.get("p1_move_details", {}) # ERRORE RIMOSSO QUI
+            p2_move = turn_data.get("p2_move_details", {}) # ERRORE RIMOSSO QUI
             p1_move_name = str(p1_move.get('name','')).lower() if p1_move else None
             p2_move_name = str(p2_move.get('name','')).lower() if p2_move else None
             if i > 0 and not p1_move_name and not p2_move_name: f['double_switch_count'] += 1
@@ -321,8 +331,8 @@ def extract_features_v20(battle, is_test_set=False):
             if p2_status == "frz": f['status_adv_frz'] += 1
             if p2_status == "slp": f['status_adv_slp'] += 1
             if p2_status == "par": f['status_adv_par'] += 1
-            b1 = p1_state.get("boosts", {})\
-            b2 = p2_state.get("boosts", {})\
+            b1 = p1_state.get("boosts", {}) # ERRORE RIMOSSO QUI
+            b2 = p2_state.get("boosts", {}) # ERRORE RIMOSSO QUI
             for stat in BOOST_KEYS:
                 boost_sums[f'p1_{stat}'] += b1.get(stat, 0)
                 boost_sums[f'p2_{stat}'] += b2.get(stat, 0)
@@ -383,7 +393,7 @@ def extract_features_v19(battle):
     f = {'battle_id': battle.get('battle_id', -1)}
     try:
         p1_team = battle.get('p1_team_details', [])
-        p2_lead = battle.get('p2_lead_details', {})\
+        p2_lead = battle.get('p2_lead_details', {}) # ERRORE RIMOSSO QUI
         p1_stats_raw = {s: [] for s in ALL_BASE_STATS}
         p1_mean_stats = {}
         p1_team_pokemon_types = []
@@ -452,10 +462,10 @@ def extract_features_v19(battle):
         high_hp_t20 = 0.0
         status_t20 = 0.0
         for i, turn_data in enumerate(tl):
-            p1_state = turn_data.get("p1_pokemon_state", {})\
-            p2_state = turn_data.get("p2_pokemon_state", {})\
-            p1_move = turn_data.get("p1_move_details", {})\
-            p2_move = turn_data.get("p2_move_details", {})\
+            p1_state = turn_data.get("p1_pokemon_state", {}) # ERRORE RIMOSSO QUI
+            p2_state = turn_data.get("p2_pokemon_state", {}) # ERRORE RIMOSSO QUI
+            p1_move = turn_data.get("p1_move_details", {}) # ERRORE RIMOSSO QUI
+            p2_move = turn_data.get("p2_move_details", {}) # ERRORE RIMOSSO QUI
             p1_move_name = str(p1_move.get('name','')).lower() if p1_move else None
             p2_move_name = str(p2_move.get('name','')).lower() if p2_move else None
             if CALCOLA_DELTA:
@@ -493,8 +503,8 @@ def extract_features_v19(battle):
                 if p2_status == "slp": f['status_adv_slp'] += 1
                 if p2_status == "par": f['status_adv_par'] += 1
             if CALCOLA_DELTA or CALCOLA_RUOLO:
-                b1 = p1_state.get("boosts", {})\
-                b2 = p2_state.get("boosts", {})\
+                b1 = p1_state.get("boosts", {}) # ERRORE RIMOSSO QUI
+                b2 = p2_state.get("boosts", {}) # ERRORE RIMOSSO QUI
                 if CALCOLA_DELTA:
                     for stat in BOOST_KEYS:
                         boost_sums[f'p1_{stat}'] += b1.get(stat, 0)
@@ -679,8 +689,8 @@ def extract_advanced_timeline_features(battle):
     p2_boost_turns = 0
     
     for t in timeline:
-        p1_b = t.get('p1_pokemon_state', {}).get('boosts', {})\
-        p2_b = t.get('p2_pokemon_state', {}).get('boosts', {})\
+        p1_b = t.get('p1_pokemon_state', {}).get('boosts', {})
+        p2_b = t.get('p2_pokemon_state', {}).get('boosts', {})
         
         p1_sum = sum(p1_b.values())
         p2_sum = sum(p2_b.values())
@@ -842,7 +852,7 @@ def extract_features_CRITICAL_MISSING(battle):
     
     timeline = battle.get('battle_timeline', [])
     p1_team = battle.get('p1_team_details', [])
-    p2_lead = battle.get('p2_lead_details', {})\
+    p2_lead = battle.get('p2_lead_details', {}) # ERRORE RIMOSSO QUI
     
     if not timeline:
         return {k: 0.0 for k in [
@@ -1143,7 +1153,7 @@ def extract_moveset_features(battle):
     timeline = battle.get('battle_timeline', [])
     
     for turn in timeline:
-        p1_state = turn.get('p1_pokemon_state', {})\
+        p1_state = turn.get('p1_pokemon_state', {}) # ERRORE RIMOSSO QUI
         p1_move = turn.get('p1_move_details') or {}
         p1_name = p1_state.get('name')
         p1_move_name = p1_move.get('name', '').lower()
@@ -1152,7 +1162,7 @@ def extract_moveset_features(battle):
             if p1_name not in p1_known_moves: p1_known_moves[p1_name] = set()
             if p1_move_name: p1_known_moves[p1_name].add(p1_move_name)
 
-        p2_state = turn.get('p2_pokemon_state', {})\
+        p2_state = turn.get('p2_pokemon_state', {}) # ERRORE RIMOSSO QUI
         p2_move = turn.get('p2_move_details') or {}
         p2_name = p2_state.get('name')
         p2_move_name = p2_move.get('name', '').lower()
