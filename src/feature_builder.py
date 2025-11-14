@@ -92,7 +92,7 @@ def extract_features_v8(battle):
     }
     try:
         p1_team = battle.get('p1_team_details', [])
-        p2_lead = battle.get('p2_lead_details', {})\
+        p2_lead = battle.get('p2_lead_details', {})
         p1_stats_raw = {s: [] for s in ALL_BASE_STATS}
         p1_mean_stats = {}
         p1_team_pokemon_types = []
