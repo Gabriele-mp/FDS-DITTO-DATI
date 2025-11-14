@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./I-Ditto-Dati-11-11-2025.png" alt="Il mio banner Pokémon">
+</p>
+
 # 🚀 Project Overview  
 The repository contains the solutions and the notebooks our team developed for the Kaggle Competition [FDS Pokémon Battles Prediction 2025] (https://www.kaggle.com/competitions/fds-pokemon-battles-prediction-2025). The goal is to predict who wins the Pokemon Battle (Gen 1), based on the dataset '.jsonl'. The dataset includes informations such as the first player's team details, the second player's lead details and the battle timeline.
 
@@ -29,3 +33,4 @@ The notebooks require the following packages:
 - scikit-learn  
 - matplotlib
 - tqdm
+
