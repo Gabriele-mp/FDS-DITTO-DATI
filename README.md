@@ -13,7 +13,14 @@ The repository contains the solutions and the notebooks our team developed for t
 ## 🔧 Models
 The repository contains the 3 best models we have built to solve the problem.
 
-### 1. Model: Ensemble with Logist Regression, LGBM and LGBM
+### 1. Model: Ensemble with Logist Regression, LGBM and LGBM  
+This is a 2-level stacking ensemble combining **Logistic Regression** and **LightGBM (LGBM)** classifiers.
+Different feature engineering pipelines were tested for the final ensemble (e.g., `v8`, `v21`, `moveset_features`, and a `critical_missing` set). These were combined into a "Mega-Set" and then filtered using feature importance to select the 120 best features.
+The final model stacks three predictors:
+- LogisticRegression (on simple features)
+-  LGBMClassifier (on advanced timeline features)
+-  GBMClassifier (on the filtered 120-feature "Mega-Set")
+Techniques such as Individual Performance, Prediction Correlation, and a Brute-Force analysis of all combinations were used to confirm that stacking all three models yielded the best CV score (0.8528).
 
 
 
@@ -37,6 +44,7 @@ The notebooks require the following packages:
 - scikit-learn  
 - matplotlib
 - tqdm
+
 
 
 
