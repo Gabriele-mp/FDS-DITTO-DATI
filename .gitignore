@@ -1,0 +1,22 @@
+# Ambiente virtuale Python
+.venv/
+venv/
+
+# Cache di Python e Jupyter
+__pycache__/
+.ipynb_checkpoints
+
+# File di sistema macOS e VSCode
+.DS_Store
+.vscode/
+
+# --- DATI ---
+# IGNORA L'INTERA CARTELLA DEI DATI
+# (i file .jsonl non devono andare su GitHub)
+data/
+
+# --- MODELLI ---
+# Ignora i file dei modelli allenati (pesanti)
+models/*.pkl
+models/*.joblib
+models/*.h5
